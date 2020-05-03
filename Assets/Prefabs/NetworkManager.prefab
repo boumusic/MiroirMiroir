@@ -54,8 +54,8 @@ MonoBehaviour:
   offlineScene: 
   onlineScene: 
   transport: {fileID: 7147458465926316728}
-  networkAddress: localhost
-  maxConnections: 4
+  networkAddress: 35.241.214.94
+  maxConnections: 10
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
@@ -100,7 +100,7 @@ MonoBehaviour:
   OnServerDisconnected:
     m_PersistentCalls:
       m_Calls: []
-  port: 7777
+  port: 8899
   NoDelay: 1
   serverMaxMessageSize: 16384
   clientMaxMessageSize: 16384
