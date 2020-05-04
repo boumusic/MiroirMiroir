@@ -744,6 +744,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7147458465926316729, guid: 53a7cf21112501546a9ac287f5ac8149,
+        type: 3}
+      propertyPath: offlineScene
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7147458465926316729, guid: 53a7cf21112501546a9ac287f5ac8149,
+        type: 3}
+      propertyPath: onlineScene
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7147458465926316730, guid: 53a7cf21112501546a9ac287f5ac8149,
         type: 3}
       propertyPath: m_Name

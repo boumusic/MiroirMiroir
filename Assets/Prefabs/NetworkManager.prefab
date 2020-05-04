@@ -51,10 +51,10 @@ MonoBehaviour:
   startOnHeadless: 1
   showDebugMessages: 0
   serverTickRate: 30
-  offlineScene: 
-  onlineScene: 
+  offlineScene: Assets/Scenes/Menu.unity
+  onlineScene: Assets/Scenes/SampleScene.unity
   transport: {fileID: 7147458465926316728}
-  networkAddress: 192.168.1.41
+  networkAddress: 40.68.173.208
   maxConnections: 10
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
@@ -100,7 +100,7 @@ MonoBehaviour:
   OnServerDisconnected:
     m_PersistentCalls:
       m_Calls: []
-  port: 8899
+  port: 15937
   NoDelay: 1
   serverMaxMessageSize: 16384
   clientMaxMessageSize: 16384
