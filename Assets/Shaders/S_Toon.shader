@@ -6,6 +6,8 @@ Shader "Toon"
 	{
 		_Color("Color", Color) = (1,1,1,0)
 		_ShadowStrength("ShadowStrength", Float) = 1
+		_MainTex("MainTex", 2D) = "white" {}
+		[HideInInspector] _texcoord( "", 2D ) = "white" {}
 		[HideInInspector] __dirty( "", Int ) = 1
 	}
 
@@ -22,6 +24,7 @@ Shader "Toon"
 		{
 			float3 worldPos;
 			float3 worldNormal;
+			float2 uv_texcoord;
 		};
 
 		struct SurfaceOutputCustomLightingCustom
@@ -39,6 +42,8 @@ Shader "Toon"
 
 		uniform float4 _Color;
 		uniform float _ShadowStrength;
+		uniform sampler2D _MainTex;
+		uniform float4 _MainTex_ST;
 
 		inline half4 LightingStandardCustomLighting( inout SurfaceOutputCustomLightingCustom s, half3 viewDir, UnityGI gi )
 		{
@@ -66,10 +71,11 @@ Shader "Toon"
 			float3 ase_worldlightDir = Unity_SafeNormalize( UnityWorldSpaceLightDir( ase_worldPos ) );
 			#endif //aseld
 			float3 ase_worldNormal = i.worldNormal;
-			float3 ase_vertexNormal = mul( unity_WorldToObject, float4( ase_worldNormal, 0 ) );
-			float dotResult2 = dot( ase_worldlightDir , ase_vertexNormal );
-			float smoothstepResult13 = smoothstep( -0.05 , 0.05 , ( dotResult2 * ase_lightAtten ));
-			float4 temp_output_6_0 = ( _Color * saturate( ( smoothstepResult13 + ( 1.0 - _ShadowStrength ) ) ) );
+			float3 ase_normWorldNormal = normalize( ase_worldNormal );
+			float dotResult2 = dot( ase_worldlightDir , ase_normWorldNormal );
+			float smoothstepResult13 = smoothstep( -0.05 , 0.05 , dotResult2);
+			float2 uv_MainTex = i.uv_texcoord * _MainTex_ST.xy + _MainTex_ST.zw;
+			float4 temp_output_6_0 = ( _Color * saturate( ( ( smoothstepResult13 * ase_lightAtten ) + ( 1.0 - _ShadowStrength ) ) ) * tex2D( _MainTex, uv_MainTex ) );
 			c.rgb = temp_output_6_0.rgb;
 			c.a = 1;
 			return c;
@@ -90,10 +96,11 @@ Shader "Toon"
 			float3 ase_worldlightDir = Unity_SafeNormalize( UnityWorldSpaceLightDir( ase_worldPos ) );
 			#endif //aseld
 			float3 ase_worldNormal = i.worldNormal;
-			float3 ase_vertexNormal = mul( unity_WorldToObject, float4( ase_worldNormal, 0 ) );
-			float dotResult2 = dot( ase_worldlightDir , ase_vertexNormal );
-			float smoothstepResult13 = smoothstep( -0.05 , 0.05 , ( dotResult2 * 1 ));
-			float4 temp_output_6_0 = ( _Color * saturate( ( smoothstepResult13 + ( 1.0 - _ShadowStrength ) ) ) );
+			float3 ase_normWorldNormal = normalize( ase_worldNormal );
+			float dotResult2 = dot( ase_worldlightDir , ase_normWorldNormal );
+			float smoothstepResult13 = smoothstep( -0.05 , 0.05 , dotResult2);
+			float2 uv_MainTex = i.uv_texcoord * _MainTex_ST.xy + _MainTex_ST.zw;
+			float4 temp_output_6_0 = ( _Color * saturate( ( ( smoothstepResult13 * 1 ) + ( 1.0 - _ShadowStrength ) ) ) * tex2D( _MainTex, uv_MainTex ) );
 			o.Albedo = temp_output_6_0.rgb;
 		}
 
@@ -124,8 +131,9 @@ Shader "Toon"
 			struct v2f
 			{
 				V2F_SHADOW_CASTER;
-				float3 worldPos : TEXCOORD1;
-				float3 worldNormal : TEXCOORD2;
+				float2 customPack1 : TEXCOORD1;
+				float3 worldPos : TEXCOORD2;
+				float3 worldNormal : TEXCOORD3;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 			v2f vert( appdata_full v )
@@ -134,9 +142,12 @@ Shader "Toon"
 				UNITY_SETUP_INSTANCE_ID( v );
 				UNITY_INITIALIZE_OUTPUT( v2f, o );
 				UNITY_TRANSFER_INSTANCE_ID( v, o );
+				Input customInputData;
 				float3 worldPos = mul( unity_ObjectToWorld, v.vertex ).xyz;
 				half3 worldNormal = UnityObjectToWorldNormal( v.normal );
 				o.worldNormal = worldNormal;
+				o.customPack1.xy = customInputData.uv_texcoord;
+				o.customPack1.xy = v.texcoord;
 				o.worldPos = worldPos;
 				TRANSFER_SHADOW_CASTER_NORMALOFFSET( o )
 				return o;
@@ -150,6 +161,7 @@ Shader "Toon"
 				UNITY_SETUP_INSTANCE_ID( IN );
 				Input surfIN;
 				UNITY_INITIALIZE_OUTPUT( Input, surfIN );
+				surfIN.uv_texcoord = IN.customPack1.xy;
 				float3 worldPos = IN.worldPos;
 				half3 worldViewDir = normalize( UnityWorldSpaceViewDir( worldPos ) );
 				surfIN.worldPos = worldPos;
@@ -170,32 +182,35 @@ Shader "Toon"
 }
 /*ASEBEGIN
 Version=15900
-202;147;1323;627;888.0422;135.5015;1;True;False
+263;380;1323;627;742.1167;260.7427;1.451536;True;False
 Node;AmplifyShaderEditor.WorldSpaceLightDirHlpNode;3;-1053.592,-235.6581;Float;False;True;1;0;FLOAT;0;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
-Node;AmplifyShaderEditor.NormalVertexDataNode;1;-1090.827,68.40189;Float;False;0;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.WorldNormalVector;14;-1138.631,-44.1242;Float;False;True;1;0;FLOAT3;0,0,1;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
 Node;AmplifyShaderEditor.DotProductOpNode;2;-759.1903,22.0079;Float;False;2;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.LightAttenuation;12;-744.3344,250.6973;Float;False;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;9;-258.2819,406.1296;Float;False;Property;_ShadowStrength;ShadowStrength;1;0;Create;True;0;0;False;0;1;0;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;11;-486.829,196.9146;Float;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;9;-258.2819,406.1296;Float;False;Property;_ShadowStrength;ShadowStrength;1;0;Create;True;0;0;False;0;1;0.5;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.LightAttenuation;12;-326.292,329.0804;Float;False;0;1;FLOAT;0
+Node;AmplifyShaderEditor.SmoothstepOpNode;13;-407.2572,180.5647;Float;False;3;0;FLOAT;0;False;1;FLOAT;-0.05;False;2;FLOAT;0.05;False;1;FLOAT;0
 Node;AmplifyShaderEditor.OneMinusNode;10;-32.08191,433.4297;Float;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SmoothstepOpNode;13;-204.0422,212.4985;Float;False;3;0;FLOAT;0;False;1;FLOAT;-0.05;False;2;FLOAT;0.05;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleAddOpNode;7;53.71808,239.7296;Float;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.ColorNode;5;-180.2818,-8.570367;Float;False;Property;_Color;Color;0;0;Create;True;0;0;False;0;1,1,1,0;1,1,1,1;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;11;-57.17453,202.7208;Float;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleAddOpNode;7;55.16961,267.3088;Float;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.ColorNode;5;-180.2818,-8.570367;Float;False;Property;_Color;Color;0;0;Create;True;0;0;False;0;1,1,1,0;0.8301887,0.2545389,0.2545389,1;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SaturateNode;8;182.418,239.7296;Float;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;6;278.6181,99.32964;Float;False;2;2;0;COLOR;0,0,0,0;False;1;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.SamplerNode;15;12.68203,-128.6529;Float;True;Property;_MainTex;MainTex;2;0;Create;True;0;0;False;0;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;6;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.NormalVertexDataNode;1;-1090.827,68.40189;Float;False;0;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;6;322.1642,109.4904;Float;False;3;3;0;COLOR;0,0,0,0;False;1;FLOAT;0;False;2;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.StandardSurfaceOutputNode;0;687.0291,92.93606;Float;False;True;2;Float;ASEMaterialInspector;0;0;CustomLighting;Toon;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;Back;0;False;-1;0;False;-1;False;0;False;-1;0;False;-1;False;0;Opaque;0.5;True;True;0;False;Opaque;;Geometry;All;True;True;True;True;True;True;True;True;True;True;True;True;True;True;True;True;True;0;False;-1;False;0;False;-1;255;False;-1;255;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;False;2;15;10;25;False;0.5;True;0;0;False;-1;0;False;-1;0;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;0;0,0,0,0;VertexOffset;True;False;Cylindrical;False;Relative;0;;-1;-1;-1;-1;0;False;0;0;False;-1;-1;0;False;-1;0;0;0;15;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT3;0,0,0;False;4;FLOAT;0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;13;FLOAT3;0,0,0;False;11;FLOAT3;0,0,0;False;12;FLOAT3;0,0,0;False;14;FLOAT4;0,0,0,0;False;15;FLOAT3;0,0,0;False;0
 WireConnection;2;0;3;0
-WireConnection;2;1;1;0
-WireConnection;11;0;2;0
-WireConnection;11;1;12;0
+WireConnection;2;1;14;0
+WireConnection;13;0;2;0
 WireConnection;10;0;9;0
-WireConnection;13;0;11;0
-WireConnection;7;0;13;0
+WireConnection;11;0;13;0
+WireConnection;11;1;12;0
+WireConnection;7;0;11;0
 WireConnection;7;1;10;0
 WireConnection;8;0;7;0
 WireConnection;6;0;5;0
 WireConnection;6;1;8;0
+WireConnection;6;2;15;0
 WireConnection;0;0;6;0
 WireConnection;0;13;6;0
 ASEEND*/
-//CHKSM=FE10A8F1EFACE4BE2DD568C06DEE9C1AE222CE89
+//CHKSM=4222ED758AE1C2E391957A475872D0B793D268AB

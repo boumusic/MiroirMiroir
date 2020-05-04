@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class UIManager : MonoBehaviour
+public class UIManagerTest : MonoBehaviour
 {
-    public static UIManager instance;
+    public static UIManagerTest instance;
 
     public GameObject startMenu;
     public TextMeshProUGUI usernameField;
@@ -28,6 +28,6 @@ public class UIManager : MonoBehaviour
     {
         startMenu.SetActive(false);
         //usernameField.interactable = false;
-        Client.instance.ConnectToServer();
+        ClientTest.instance.ConnectToServer();
     }
 }
