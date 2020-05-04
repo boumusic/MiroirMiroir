@@ -104,7 +104,7 @@ MonoBehaviour:
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs: []
-  debug: 1
+  debug: 0
 --- !u!114 &3088372697307492496
 MonoBehaviour:
   m_ObjectHideFlags: 0
