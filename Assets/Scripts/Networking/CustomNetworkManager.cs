@@ -11,11 +11,19 @@ public class CustomNetworkManager : NetworkManager
     {
         base.Start();
 
-        if (!debug) StartClient();
+        string name = FindObjectOfType<PlayerInfo>().username;
+
+        if (!debug)
+        {
+            if (name == "server")
+                StartServer();
+            else
+                StartClient();
+        }
         else
         {
             networkAddress = "localhost";
-            if (FindObjectOfType<PlayerInfo>().username == "host")
+            if (name == "host")
                 StartHost();
             else
                 StartClient();
