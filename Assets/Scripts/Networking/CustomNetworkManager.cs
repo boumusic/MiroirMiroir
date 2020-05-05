@@ -11,7 +11,12 @@ public class CustomNetworkManager : NetworkManager
     {
         base.Start();
 
-        string name = FindObjectOfType<PlayerInfo>().username;
+        string name = "";
+        if(Info) name = Info.username;
+
+#if UNITY_EDITOR
+        GetComponent<NetworkManagerHUD>().showGUI = true;
+#else
 
         if (!debug)
         {
@@ -28,14 +33,18 @@ public class CustomNetworkManager : NetworkManager
             else
                 StartClient();
         }
+
+#endif
     }
 
     public override GameObject OnServerAddPlayer(NetworkConnection conn)
     {
         GameObject player = base.OnServerAddPlayer(conn);
 
-        player.GetComponent<Player>().username = FindObjectOfType<PlayerInfo>().username;
+        if(Info) player.GetComponent<Player>().username = Info.username;
 
         return player;
     }
+
+    private PlayerInfo Info => FindObjectOfType<PlayerInfo>();
 }

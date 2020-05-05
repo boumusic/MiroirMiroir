@@ -15,7 +15,9 @@ public class Player : NetworkBehaviour
         {
             UIManager.instance.player = this;
             character.Initialize(this);
-            CmdUpdateName(FindObjectOfType<PlayerInfo>().username);
+
+            PlayerInfo info = FindObjectOfType<PlayerInfo>();
+            if(info) CmdUpdateName(info.username);
         }
     }
 
@@ -39,7 +41,7 @@ public class Player : NetworkBehaviour
     private void Inputs()
     {
         character.InputHorizontal(Input.GetAxisRaw("Horizontal"));
-
+        
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             character.color.CmdNextColor();
@@ -55,5 +57,8 @@ public class Player : NetworkBehaviour
             UIManager.instance.OpenChatWindow();
             character.InputHorizontal(0);
         }
+
+        character.UpdateCrouch(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.S));
+        character.InputSight(Input.GetKey(KeyCode.Mouse1));
     }
 }
