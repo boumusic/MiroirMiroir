@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxRunSpeed: 3
   rotationSpeed: 20
-  jumpStrength: 20
+  jumpStrength: 30
   jumpCurve:
     serializedVersion: 2
     m_Curve:
@@ -57,8 +57,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  jumpDuration: 0.3
-  maxFallStrength: -20
+  jumpDuration: 0.5
+  maxFallStrength: -8
   timeToReachMaxFall: 0.7
   fallCurve:
     serializedVersion: 2
@@ -85,8 +85,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   castGroundOrigin: 0.14
-  groundRaycastDown: 0.35
-  castBoxWidth: 0.07
+  groundRaycastDown: 0.13
+  castBoxWidth: 0.3
   groundMask:
     serializedVersion: 2
     m_Bits: 2048

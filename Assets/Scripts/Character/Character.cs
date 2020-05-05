@@ -16,6 +16,8 @@ public class Character : NetworkBehaviour
     public TextMeshPro nameText;
     public Transform aimTarget;
 
+    [TextArea]
+    public string debug;
 
     #region State
     private StateMachine<CharacterState> stateMachine;
@@ -61,6 +63,7 @@ public class Character : NetworkBehaviour
     private void OnDrawGizmos()
     {
         DrawBox();
+        
     }
 
     #region Input
@@ -113,6 +116,14 @@ public class Character : NetworkBehaviour
         animator.Land();
     }
 
+    private void Grounded_Update()
+    {
+        if(!CastGround())
+        {
+            stateMachine.ChangeState(CharacterState.Falling);
+        }
+    }
+
     #endregion
 
     #region Jumping
@@ -162,17 +173,17 @@ public class Character : NetworkBehaviour
         SetVerticalVelocity(m.maxFallStrength * m.fallCurve.Evaluate(fallProgress));
         if (fallProgress > 1f) fallProgress = 1f;
 
-        if(CastGround())
+        if (CastGround())
         {
             Debug.Log("Ground");
             SnapToGround();
             stateMachine.ChangeState(CharacterState.Grounded);
         }
     }
-    
+
     private void SnapToGround()
     {
-        body.position = new Vector3(body.position.x, hitGrounds[0].point.y, body.position.z);
+        //body.position = new Vector3(body.position.x, hitGrounds[0].point.y, body.position.z);
     }
     #endregion
 
@@ -184,7 +195,7 @@ public class Character : NetworkBehaviour
     public bool CastGround()
     {
         hitGrounds = Physics.BoxCastAll(FeetOrigin, CastBox, -Vector3.up, Quaternion.identity, m.groundRaycastDown, m.groundMask, QueryTriggerInteraction.Ignore);
-       
+
         return hitGrounds.Length > 0;
     }
 
