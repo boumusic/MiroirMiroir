@@ -18,6 +18,7 @@ public class CharacterColor : NetworkBehaviour
     public void CmdPreviousColor()
     {
         colorIndex--;
+        if (colorIndex < 0) colorIndex = colors.Count -1;
         UpdateColor();
         RpcChangeColor(colorIndex);
     }
@@ -26,6 +27,7 @@ public class CharacterColor : NetworkBehaviour
     public void CmdNextColor()
     {
         colorIndex++;
+        if (colorIndex >= colors.Count) colorIndex = 0;
         UpdateColor();
         RpcChangeColor(colorIndex);
     }
@@ -39,7 +41,6 @@ public class CharacterColor : NetworkBehaviour
 
     private void UpdateColor()
     {
-        colorIndex = colorIndex % colors.Count;
         for (int i = 0; i < rends.Length; i++)
         {
             rends[i].material.SetColor("_Color", CurrentColor);

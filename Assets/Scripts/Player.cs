@@ -23,7 +23,7 @@ public class Player : NetworkBehaviour
 
     private void Update()
     {
-        if (!hasAuthority && !isClient) return;
+        if (!hasAuthority) return;
         Inputs();
     }
 
@@ -40,6 +40,7 @@ public class Player : NetworkBehaviour
 
     private void Inputs()
     {
+        if (UIManager.instance.IsTyping) return;
         character.InputHorizontal(Input.GetAxisRaw("Horizontal"));
         
         if (Input.GetKeyDown(KeyCode.UpArrow))
