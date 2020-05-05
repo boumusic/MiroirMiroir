@@ -14,6 +14,9 @@ public class UIManager : MonoBehaviour
     public bool IsTyping => chatWindow.gameObject.activeInHierarchy;
     public bool CanOpenChat { get; private set; }
 
+    [Header("Pause")]
+    public GameObject pause;
+
     private void Awake()
     {
         if (instance == null)
@@ -45,6 +48,11 @@ public class UIManager : MonoBehaviour
         chatWindow.gameObject.SetActive(false);
         CanOpenChat = false;
         StartCoroutine(ResetOpenChat());
+    }
+
+    public void TogglePause()
+    {
+        pause.SetActive(!pause.activeInHierarchy);
     }
 
     private IEnumerator ResetOpenChat()

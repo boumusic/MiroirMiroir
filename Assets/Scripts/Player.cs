@@ -58,6 +58,16 @@ public class Player : NetworkBehaviour
             character.InputHorizontal(0);
         }
 
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            UIManager.instance.TogglePause();
+        }
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            character.StartJump();
+        }
+
         character.UpdateCrouch(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.S));
         character.InputSight(Input.GetKey(KeyCode.Mouse1));
     }
