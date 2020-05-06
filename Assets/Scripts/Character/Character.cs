@@ -16,6 +16,9 @@ public class Character : NetworkBehaviour
     public TextMeshPro nameText;
     public Transform aimTarget;
 
+    [Header("Debug")]
+    public RaycastHitSerializer hitSerializer;
+
     [TextArea]
     public string debug;
 
@@ -29,6 +32,8 @@ public class Character : NetworkBehaviour
     public float speed;
 
     private Player player;
+
+    public Vector3 Velocity => body.velocity;
 
     private void Awake()
     {
@@ -53,6 +58,7 @@ public class Character : NetworkBehaviour
         stateMachine.UpdateManually();
         HorizontalMovement();
         Sight();
+        hitSerializer.UpdateHits(hitGrounds);
     }
 
     private void FixedUpdate()
@@ -63,7 +69,7 @@ public class Character : NetworkBehaviour
     private void OnDrawGizmos()
     {
         DrawBox();
-        
+
     }
 
     #region Input
@@ -80,10 +86,21 @@ public class Character : NetworkBehaviour
     private Vector3 velocity;
 
     private float horizAxis;
+    private float horizAccel = 0f;
+
+    private float currentAcceleration => isGrounded ? m.groundedAccel : m.aerialAccel;
+    private float currentDeceleration => isGrounded ? m.groundedDecel : m.aerialDecel;
+
     private void HorizontalMovement()
     {
-        float xVelocity = horizAxis * m.maxRunSpeed;
-        SetHorizontalVelocity(xVelocity);
+        if (horizAxis == 0)
+            horizAccel /= currentDeceleration;
+        else
+            horizAccel += horizAxis * Time.deltaTime * currentAcceleration;
+
+        horizAccel = Mathf.Clamp(horizAccel, -1, 1);
+
+        SetHorizontalVelocity(horizAccel * m.maxRunSpeed);
 
         float targetRot = horizAxis == 0 ? 180 : horizAxis * 90f;
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.AngleAxis(targetRot, Vector3.up), m.rotationSpeed * Time.deltaTime);
@@ -110,6 +127,7 @@ public class Character : NetworkBehaviour
 
     #region Grounded
 
+    private bool isGrounded => CurrentState == CharacterState.Grounded;
     private void Grounded_Enter()
     {
         SetVerticalVelocity(0);
@@ -118,7 +136,8 @@ public class Character : NetworkBehaviour
 
     private void Grounded_Update()
     {
-        if(!CastGround())
+        SnapToGround();
+        if (!CastGround())
         {
             stateMachine.ChangeState(CharacterState.Falling);
         }
@@ -149,6 +168,11 @@ public class Character : NetworkBehaviour
     {
         jumpProgress += Time.deltaTime / m.jumpDuration;
         SetVerticalVelocity(m.jumpStrength * m.jumpCurve.Evaluate(jumpProgress));
+        if(jumpProgress > 0.3f && downButton)
+        {
+            stateMachine.ChangeState(CharacterState.Falling);
+        }
+
         if (jumpProgress > 1f)
         {
             stateMachine.ChangeState(CharacterState.Falling);
@@ -170,12 +194,13 @@ public class Character : NetworkBehaviour
     private void Falling_Update()
     {
         fallProgress += Time.deltaTime / m.timeToReachMaxFall;
-        SetVerticalVelocity(m.maxFallStrength * m.fallCurve.Evaluate(fallProgress));
+        float fallStrength = m.maxFallStrength;
+        if (downButton) fallStrength *= m.fallSpeedDownMultiplier;
+        SetVerticalVelocity(fallStrength * m.fallCurve.Evaluate(fallProgress));
         if (fallProgress > 1f) fallProgress = 1f;
 
         if (CastGround())
         {
-            Debug.Log("Ground");
             SnapToGround();
             stateMachine.ChangeState(CharacterState.Grounded);
         }
@@ -183,7 +208,11 @@ public class Character : NetworkBehaviour
 
     private void SnapToGround()
     {
-        //body.position = new Vector3(body.position.x, hitGrounds[0].point.y, body.position.z);
+        if (hitGrounds[0].point != Vector3.zero)
+        {
+            body.position = new Vector3(body.position.x, hitGrounds[0].point.y, body.position.z);
+            Debug.Log("Snap Ground");
+        }
     }
     #endregion
 
@@ -206,12 +235,16 @@ public class Character : NetworkBehaviour
 
     #endregion
 
-    #region Crouch
+    #region Down
 
     private bool isCrouched = false;
-    public void UpdateCrouch(bool crouched)
+    private bool downButton = false;
+    public void UpdateDown(bool downButton)
     {
-        isCrouched = crouched;
+        this.downButton = downButton;
+        isCrouched = downButton;
+
+        if (CurrentState != CharacterState.Grounded) isCrouched = false;
         animator.Bool("isCrouched", isCrouched);
     }
 

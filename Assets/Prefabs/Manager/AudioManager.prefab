@@ -2625,6 +2625,55 @@ MonoBehaviour:
     randomVariations:
     - {fileID: 8300000, guid: f2b52219cf48ad744adfa61222af9368, type: 3}
     - {fileID: 8300000, guid: 35fa6ef708ea2ab47b690587048e4bc8, type: 3}
+  - clip: {fileID: 8300000, guid: 3f9c0b92f4fc7164ea592fbacadb6f5b, type: 3}
+    volume: 0.155
+    pan: 0
+    loop: 0
+    randomPitch: 0.07
+    playOnAwake: 0
+    randomVariations: []
+  - clip: {fileID: 8300000, guid: 758be47c741c733428c6bea6b9448f09, type: 3}
+    volume: 0.167
+    pan: 0
+    loop: 0
+    randomPitch: 0
+    playOnAwake: 0
+    randomVariations: []
+  - clip: {fileID: 8300000, guid: ac8671c40ccaca7409bec8fdc27784f2, type: 3}
+    volume: 0.5
+    pan: 0
+    loop: 0
+    randomPitch: 0
+    playOnAwake: 0
+    randomVariations: []
+  - clip: {fileID: 8300000, guid: 283684ebe88ade7448b9252bafc1d27c, type: 3}
+    volume: 0.5
+    pan: 0
+    loop: 0
+    randomPitch: 0
+    playOnAwake: 0
+    randomVariations: []
+  - clip: {fileID: 8300000, guid: e2256cb3189cd974f8b82c32cf09a638, type: 3}
+    volume: 0.5
+    pan: 0
+    loop: 0
+    randomPitch: 0
+    playOnAwake: 0
+    randomVariations: []
+  - clip: {fileID: 8300000, guid: 5a8f22f211209f447bfe842645405fe6, type: 3}
+    volume: 0.5
+    pan: 0
+    loop: 0
+    randomPitch: 0
+    playOnAwake: 0
+    randomVariations: []
+  - clip: {fileID: 8300000, guid: 5257f3e8e3150704db9446af9d36d12a, type: 3}
+    volume: 0.5
+    pan: 0
+    loop: 0
+    randomPitch: 0
+    playOnAwake: 0
+    randomVariations: []
   sourcePool:
   - {fileID: 1796846815810402943}
   - {fileID: 5445590299652059591}

@@ -103,7 +103,7 @@ MonoBehaviour:
     m_Bits: 256
   stopNaNPropagation: 1
   finalBlitToCameraTarget: 0
-  antialiasingMode: 0
+  antialiasingMode: 2
   temporalAntialiasing:
     jitterSpread: 0.75
     sharpness: 0.25
@@ -249,6 +249,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   posSmoothness: 0.2
   minZ: 20
-  maxZ: 85
+  maxZ: 50
   maxPlayerDistance: 100
   yOffset: 2.5
+  speedScroll: 30

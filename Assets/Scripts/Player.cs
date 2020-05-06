@@ -69,7 +69,7 @@ public class Player : NetworkBehaviour
             character.StartJump();
         }
 
-        character.UpdateCrouch(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.S));
+        character.UpdateDown(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.S));
         character.InputSight(Input.GetKey(KeyCode.Mouse1));
     }
 }
