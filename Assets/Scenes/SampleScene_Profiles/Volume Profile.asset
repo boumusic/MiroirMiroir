@@ -27,7 +27,7 @@ MonoBehaviour:
     value: {x: 0.5, y: 0.5}
   intensity:
     overrideState: 1
-    value: 0.501
+    value: 0.456
   smoothness:
     overrideState: 1
     value: 0.757
@@ -44,25 +44,6 @@ MonoBehaviour:
   opacity:
     overrideState: 1
     value: 1
---- !u!114 &-389088132889063296
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d54ee778fd351548a3a5b263fb88388, type: 3}
-  m_Name: PixelPorridge
-  m_EditorClassIdentifier: 
-  active: 0
-  enabled:
-    overrideState: 1
-    value: 1
-  resolution:
-    overrideState: 1
-    value: 535
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76,30 +57,8 @@ MonoBehaviour:
   m_Name: Volume Profile
   m_EditorClassIdentifier: 
   settings:
-  - {fileID: -389088132889063296}
-  - {fileID: 99025163483150591}
   - {fileID: -8312404568340760250}
   - {fileID: 1514072061309388511}
---- !u!114 &99025163483150591
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: adccb425d876b9d45a96dbd492ae1d38, type: 3}
-  m_Name: RecursivePP
-  m_EditorClassIdentifier: 
-  active: 0
-  enabled:
-    overrideState: 1
-    value: 1
-  texture:
-    overrideState: 1
-    value: {fileID: 8400000, guid: cbda094b06fb899438847ff5b96ce2c1, type: 2}
-    defaultState: 1
 --- !u!114 &1514072061309388511
 MonoBehaviour:
   m_ObjectHideFlags: 3

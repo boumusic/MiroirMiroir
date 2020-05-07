@@ -5,35 +5,27 @@ using Mirror;
 
 public class CustomNetworkManager : NetworkManager
 {
-    public bool debug = false;
 
     public override void Start()
     {
         base.Start();
 
         string name = "";
-        if(Info) name = Info.username;
+        if (Info) name = Info.username;
+
+        if (name == "server")
+            StartServer();
+        else if (name == "host")
+            StartHost();
+        else
+        {
+            if (name.Contains("debug")) GetComponent<NetworkManagerHUD>().showGUI = true;
+            else StartClient();
+        }
+
 
 #if UNITY_EDITOR
         GetComponent<NetworkManagerHUD>().showGUI = true;
-#else
-
-        if (!debug)
-        {
-            if (name == "server")
-                StartServer();
-            else
-                StartClient();
-        }
-        else
-        {
-            networkAddress = "localhost";
-            if (name == "host")
-                StartHost();
-            else
-                StartClient();
-        }
-
 #endif
     }
 
@@ -41,7 +33,7 @@ public class CustomNetworkManager : NetworkManager
     {
         GameObject player = base.OnServerAddPlayer(conn);
 
-        if(Info) player.GetComponent<Player>().username = Info.username;
+        if (Info) player.GetComponent<Player>().username = Info.username;
 
         return player;
     }

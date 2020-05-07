@@ -3,10 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+public enum PauseTabType
+{
+    Home,
+    Controls,
+    Options
+}
+
+[System.Serializable]
+public class PauseTab
+{
+    public PauseTabType type;
+    public GameObject go;
+}
+
 public class UIManager : MonoBehaviour
 {
     public static UIManager instance;
 
+    [HideInInspector]
     public Player player;
 
     [Header("Chat")]
@@ -16,6 +31,9 @@ public class UIManager : MonoBehaviour
 
     [Header("Pause")]
     public GameObject pause;
+    public PauseTab[] tabs;
+
+    private PauseTabType currentTab;
 
     private void Awake()
     {
@@ -31,6 +49,7 @@ public class UIManager : MonoBehaviour
 
         CanOpenChat = true;
         chatWindow.gameObject.SetActive(false);
+        pause.SetActive(false);
     }
 
     public void OpenChatWindow()
@@ -52,7 +71,20 @@ public class UIManager : MonoBehaviour
 
     public void TogglePause()
     {
-        pause.SetActive(!pause.activeInHierarchy);
+        bool active = !pause.activeInHierarchy;
+        pause.SetActive(active);
+        if(active)
+        {
+            SwitchPauseTab(PauseTabType.Home);
+        }
+    }
+
+    public void SwitchPauseTab(PauseTabType type)
+    {
+        for (int i = 0; i < tabs.Length; i++)
+        {
+            tabs[i].go.SetActive(type == tabs[i].type);
+        }
     }
 
     private IEnumerator ResetOpenChat()
